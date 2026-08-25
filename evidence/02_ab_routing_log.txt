@@ -1,0 +1,73 @@
+============================================================
+  Bước 2: Prompt Hub & A/B Routing
+============================================================
+✅ Config OK  |  Provider: OPENROUTER  |  Project: day22-lab
+✅ Đã push V1 → https://smith.langchain.com/prompts/khoa-rag-prompt-v1/fd7690ea?organizationId=c9a53216-750f-4c98-9a0a-f4f40d38c21c
+✅ Đã push V2 → https://smith.langchain.com/prompts/khoa-rag-prompt-v2/e5711fd7?organizationId=c9a53216-750f-4c98-9a0a-f4f40d38c21c
+↓ Đã pull 'khoa-rag-prompt-v1' từ Hub
+↓ Đã pull 'khoa-rag-prompt-v2' từ Hub
+🔨 Đang tạo FAISS index từ 107 chunks ...
+✅ FAISS vectorstore đã sẵn sàng.
+[01] [prompt-v2] What are the three main types of machine learning?...
+[02] [prompt-v2] What is overfitting in machine learning?...
+[03] [prompt-v1] Explain the bias-variance tradeoff....
+[04] [prompt-v1] How does regularization prevent overfitting?...
+[05] [prompt-v2] What is cross-validation?...
+[06] [prompt-v2] What is backpropagation?...
+[07] [prompt-v2] What are Convolutional Neural Networks primarily used f...
+[08] [prompt-v2] How do LSTM networks address the vanishing gradient pro...
+[09] [prompt-v1] What activation functions are commonly used in neural n...
+[10] [prompt-v2] What is the role of pooling layers in CNNs?...
+[11] [prompt-v1] What is the transformer architecture?...
+[12] [prompt-v1] What are word embeddings?...
+[13] [prompt-v2] What is transfer learning in NLP?...
+[14] [prompt-v1] How does BERT handle language understanding?...
+Traceback (most recent call last):
+  File "/Users/mac/Documents/VinUniversity/AI_in_action/Day22-Track2-2A202601964-NguyenTrongDangKhoa/venv/lib/python3.11/site-packages/langchain_openai/chat_models/base.py", line 1880, in _generate
+    raw_response = self.client.with_raw_response.create(**payload)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/Documents/VinUniversity/AI_in_action/Day22-Track2-2A202601964-NguyenTrongDangKhoa/venv/lib/python3.11/site-packages/openai/_legacy_response.py", line 369, in wrapped
+    return cast(LegacyAPIResponse[R], func(*args, **kwargs))
+                                      ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/Documents/VinUniversity/AI_in_action/Day22-Track2-2A202601964-NguyenTrongDangKhoa/venv/lib/python3.11/site-packages/openai/_utils/_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/Documents/VinUniversity/AI_in_action/Day22-Track2-2A202601964-NguyenTrongDangKhoa/venv/lib/python3.11/site-packages/openai/resources/chat/completions/completions.py", line 1296, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/Users/mac/Documents/VinUniversity/AI_in_action/Day22-Track2-2A202601964-NguyenTrongDangKhoa/venv/lib/python3.11/site-packages/openai/_base_client.py", line 1375, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/Documents/VinUniversity/AI_in_action/Day22-Track2-2A202601964-NguyenTrongDangKhoa/venv/lib/python3.11/site-packages/openai/_base_client.py", line 1148, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '50', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1787616000000'}, 'limit_source': 'openrouter_free_tier_daily', 'remedy_hint': 'Wait for the daily reset (see X-RateLimit-Reset), or purchase credits to raise your free-model daily limit.', 'provider_name': None}}, 'user_id': 'user_3HAUIJUJDH3hyIEZ2Z6urkFWMXu'}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/mac/Documents/VinUniversity/AI_in_action/Day22-Track2-2A202601964-NguyenTrongDangKhoa/src/02_prompt_hub_ab_routing.py", line 217, in <module>
+    main()
+  File "/Users/mac/Documents/VinUniversity/AI_in_action/Day22-Track2-2A202601964-NguyenTrongDangKhoa/src/02_prompt_hub_ab_routing.py", line 204, in main
+    result = ask_ab(retriever, llm, prompt, question, version_tag)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/Documents/VinUniversity/AI_in_action/Day22-Track2-2A202601964-NguyenTrongDangKhoa/src/02_prompt_hub_ab_routing.py", line 154, in ask_ab
+    answer = (prompt | llm | StrOutputParser()).invoke({"context": context, "question": question})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/Documents/VinUniversity/AI_in_action/Day22-Track2-2A202601964-NguyenTrongDangKhoa/venv/lib/python3.11/site-packages/langchain_core/runnables/base.py", line 3456, in invoke
+    input_ = context.run(step.invoke, input_, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/Documents/VinUniversity/AI_in_action/Day22-Track2-2A202601964-NguyenTrongDangKhoa/venv/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py", line 477, in invoke
+    self.generate_prompt(
+  File "/Users/mac/Documents/VinUniversity/AI_in_action/Day22-Track2-2A202601964-NguyenTrongDangKhoa/venv/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py", line 1866, in generate_prompt
+    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/Documents/VinUniversity/AI_in_action/Day22-Track2-2A202601964-NguyenTrongDangKhoa/venv/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py", line 1673, in generate
+    self._generate_with_cache(
+  File "/Users/mac/Documents/VinUniversity/AI_in_action/Day22-Track2-2A202601964-NguyenTrongDangKhoa/venv/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py", line 2011, in _generate_with_cache
+    result = self._generate(
+             ^^^^^^^^^^^^^^^
+  File "/Users/mac/Documents/VinUniversity/AI_in_action/Day22-Track2-2A202601964-NguyenTrongDangKhoa/venv/lib/python3.11/site-packages/langchain_openai/chat_models/base.py", line 1885, in _generate
+    _handle_openai_api_error(e)
+  File "/Users/mac/Documents/VinUniversity/AI_in_action/Day22-Track2-2A202601964-NguyenTrongDangKhoa/venv/lib/python3.11/site-packages/langchain_openai/chat_models/base.py", line 666, in _handle_openai_api_error
+    raise OpenAIRateLimitError(
+langchain_openai.chat_models.base.OpenAIRateLimitError: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '50', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1787616000000'}, 'limit_source': 'openrouter_free_tier_daily', 'remedy_hint': 'Wait for the daily reset (see X-RateLimit-Reset), or purchase credits to raise your free-model daily limit.', 'provider_name': None}}, 'user_id': 'user_3HAUIJUJDH3hyIEZ2Z6urkFWMXu'}
