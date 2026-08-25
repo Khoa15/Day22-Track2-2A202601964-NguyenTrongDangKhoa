@@ -105,7 +105,7 @@ def get_embeddings(provider: str = None):
     """
     provider = (provider or config.PROVIDER).lower()
 
-    if provider in ("openai", "openrouter"):
+    if provider == "openai":
         from langchain_openai import OpenAIEmbeddings
         kwargs = {
             "model": config.OPENAI_EMBEDDING_MODEL,
@@ -114,6 +114,37 @@ def get_embeddings(provider: str = None):
         if config.OPENAI_BASE_URL:
             kwargs["base_url"] = config.OPENAI_BASE_URL
         return OpenAIEmbeddings(**kwargs)
+
+    elif provider == "openrouter":
+        # OpenRouter không tương thích hoàn toàn với OpenAI client cho embeddings,
+        # nên dùng HTTP request trực tiếp với openai SDK ở chế độ raw.
+        from langchain_core.embeddings import Embeddings
+        import openai
+
+        class OpenRouterEmbeddings(Embeddings):
+            def __init__(self, model: str, api_key: str, base_url: str):
+                self.model = model
+                self.client = openai.OpenAI(api_key=api_key, base_url=base_url)
+
+            def embed_documents(self, texts):
+                response = self.client.embeddings.create(
+                    model=self.model,
+                    input=texts,
+                )
+                return [d.embedding for d in response.data]
+
+            def embed_query(self, text):
+                response = self.client.embeddings.create(
+                    model=self.model,
+                    input=[text],
+                )
+                return response.data[0].embedding
+
+        return OpenRouterEmbeddings(
+            model=config.OPENAI_EMBEDDING_MODEL,
+            api_key=config.OPENROUTER_API_KEY,
+            base_url="https://openrouter.ai/api/v1",
+        )
 
     elif provider == "gemini":
         from langchain_google_genai import GoogleGenerativeAIEmbeddings
